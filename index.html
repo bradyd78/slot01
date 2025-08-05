@@ -31,6 +31,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.3s;
+    }
+    .reel.spin {
+      animation: flash 0.3s;
+    }
+    @keyframes flash {
+      0% { background: #000; }
+      50% { background: #0f0; }
+      100% { background: #000; }
     }
     button {
       padding: 10px 20px;
@@ -39,6 +48,7 @@
       background: #0f0;
       border: none;
       border-radius: 5px;
+      margin: 5px;
     }
   </style>
 </head>
@@ -50,16 +60,31 @@
       <div class="reel" id="reel3">🍊</div>
     </div>
     <button onclick="spin()">Spin</button>
+    <button onclick="resetCounters()">Reset</button>
     <p id="result"></p>
+    <p>Spins: <span id="spinCount">0</span></p>
+    <p>Wins: <span id="winCount">0</span></p>
   </div>
 
   <script>
+    let spinCount = 0;
+    let winCount = 0;
     const symbols = ['🍒', '🍋', '🍊', '🍇', '🔔', '⭐'];
+
     function getRandomSymbol() {
       return symbols[Math.floor(Math.random() * symbols.length)];
     }
 
+    function animateReel(id) {
+      const reel = document.getElementById(id);
+      reel.classList.add('spin');
+      setTimeout(() => reel.classList.remove('spin'), 300);
+    }
+
     function spin() {
+      spinCount++;
+      document.getElementById('spinCount').textContent = spinCount;
+
       const r1 = getRandomSymbol();
       const r2 = getRandomSymbol();
       const r3 = getRandomSymbol();
@@ -68,12 +93,29 @@
       document.getElementById('reel2').textContent = r2;
       document.getElementById('reel3').textContent = r3;
 
+      animateReel('reel1');
+      animateReel('reel2');
+      animateReel('reel3');
+
       const result = document.getElementById('result');
       if (r1 === r2 && r2 === r3) {
+        winCount++;
+        document.getElementById('winCount').textContent = winCount;
         result.textContent = '🎉 Jackpot! You win!';
       } else {
         result.textContent = '😢 Try again!';
       }
+    }
+
+    function resetCounters() {
+      spinCount = 0;
+      winCount = 0;
+      document.getElementById('spinCount').textContent = spinCount;
+      document.getElementById('winCount').textContent = winCount;
+      document.getElementById('result').textContent = '';
+      document.getElementById('reel1').textContent = '🍒';
+      document.getElementById('reel2').textContent = '🍋';
+      document.getElementById('reel3').textContent = '🍊';
     }
   </script>
 </body>
