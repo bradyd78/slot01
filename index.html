@@ -59,8 +59,8 @@
       <div class="reel" id="reel2">🍋</div>
       <div class="reel" id="reel3">🍊</div>
     </div>
-    <button onclick="spin()">Spin</button>
-    <button onclick="resetCounters()">Reset</button>
+    <button id="spinBtn">Spin</button>
+    <button id="resetBtn">Reset</button>
     <p id="result"></p>
     <p>Spins: <span id="spinCount">0</span></p>
     <p>Wins: <span id="winCount">0</span></p>
@@ -75,36 +75,40 @@
       return symbols[Math.floor(Math.random() * symbols.length)];
     }
 
-    function animateReel(id) {
-      const reel = document.getElementById(id);
-      reel.classList.add('spin');
-      setTimeout(() => reel.classList.remove('spin'), 300);
+    function spinReel(reelId, duration) {
+      const reel = document.getElementById(reelId);
+      let elapsed = 0;
+      const interval = setInterval(() => {
+        reel.textContent = getRandomSymbol();
+        elapsed += 100;
+        if (elapsed >= duration) {
+          clearInterval(interval);
+        }
+      }, 100);
     }
 
     function spin() {
       spinCount++;
       document.getElementById('spinCount').textContent = spinCount;
+      document.getElementById('result').textContent = '';
 
-      const r1 = getRandomSymbol();
-      const r2 = getRandomSymbol();
-      const r3 = getRandomSymbol();
+      spinReel('reel1', 1000);
+      spinReel('reel2', 1500);
+      spinReel('reel3', 2000);
 
-      document.getElementById('reel1').textContent = r1;
-      document.getElementById('reel2').textContent = r2;
-      document.getElementById('reel3').textContent = r3;
+      setTimeout(() => {
+        const r1 = document.getElementById('reel1').textContent;
+        const r2 = document.getElementById('reel2').textContent;
+        const r3 = document.getElementById('reel3').textContent;
 
-      animateReel('reel1');
-      animateReel('reel2');
-      animateReel('reel3');
-
-      const result = document.getElementById('result');
-      if (r1 === r2 && r2 === r3) {
-        winCount++;
-        document.getElementById('winCount').textContent = winCount;
-        result.textContent = '🎉 Jackpot! You win!';
-      } else {
-        result.textContent = '😢 Try again!';
-      }
+        if (r1 === r2 && r2 === r3) {
+          winCount++;
+          document.getElementById('winCount').textContent = winCount;
+          document.getElementById('result').textContent = '🎉 Jackpot! You win!';
+        } else {
+          document.getElementById('result').textContent = '😢 Try again!';
+        }
+      }, 2100);
     }
 
     function resetCounters() {
@@ -117,6 +121,10 @@
       document.getElementById('reel2').textContent = '🍋';
       document.getElementById('reel3').textContent = '🍊';
     }
+
+    // Attach event listeners after DOM is ready
+    document.getElementById('spinBtn').addEventListener('click', spin);
+    document.getElementById('resetBtn').addEventListener('click', resetCounters);
   </script>
 </body>
 </html>
