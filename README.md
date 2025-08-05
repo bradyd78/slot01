@@ -35,3 +35,5 @@ Feel free to open an issue or submit a pull request.
 ## License
 
 MIT
+
+Built with help from Microsoft Copilot to explore front-end game logic and DOM manipulation
